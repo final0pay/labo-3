@@ -55,8 +55,12 @@ public class Cache<Key,Value> {
 		  if(!elem.getValue().equals(value)) {
 			  elem.setValue(value);
 			  elem.setDirty(true);
+			  Position<Key> k = elem.getPos();
+			  if(!this.keyListLRU.first().equals(k)) {
+				  this.keyListLRU.remove(k);
+				  this.keyListLRU.addFirst(key);
+			  }
 			  elem.setPos(this.keyListLRU.first());
-			  this.cacheContents.put(key, elem);
 		  }
 	  }
   }
