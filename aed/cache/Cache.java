@@ -40,6 +40,7 @@ public class Cache<Key,Value> {
   // Devuelve el valor que corresponde a una clave "Key"
   public Value get(Key key) {
     // CAMBIA este metodo
+	  
     return null;
   }
 
@@ -49,8 +50,20 @@ public class Cache<Key,Value> {
   // Establece un valor nuevo para la clave en la memoria cache
   public void put(Key key, Value value) {
     // CAMBIA este metodo
+	  if (this.cacheContents.containsKey(key)) {
+		  CacheCell<Key, Value> elem = this.cacheContents.get(key);
+		  if(!elem.getValue().equals(value)) {
+			  elem.setValue(value);
+			  elem.setDirty(true);
+			  elem.setPos(this.keyListLRU.first());
+			  this.cacheContents.put(key, elem);
+		  }
+	  }
   }
-
+/*  public Position<Key> buscar(Key k) {
+	  Position<Key> cursor 
+  }
+*/
 
 
 
