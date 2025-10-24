@@ -49,7 +49,7 @@ public class Cache<Key,Value> {
 				  return null;
 			  }
 		}
-		return cacheContents.get(key).getValue();
+		return cacheContents.contaninsKey(key)?cacheContents.get(key).getValue():null;
   }
 
 
