@@ -34,13 +34,21 @@ public class Cache<Key,Value> {
     this.cacheContents = new HashTableMap<Key,CacheCell<Key,Value>>();
     this.keyListLRU = new NodePositionList<Key>();
   }
-  //hola
 
 
   // Devuelve el valor que corresponde a una clave "Key"
   public Value get(Key key) {
-    // CAMBIA este metodo
-    return null;
+	if(cacheContents.isEmpty()) {
+		  if(mainMemory.table.containsKey(key)) {
+			  keyListLRU.addFirst(key);
+			  CacheCell<Key,Value> momentaneo= new CacheCell<Key,Value>(mainMemory.read(key), false, keyListLRU.first());
+			  cacheContents.put(key,momentaneo);
+		  }else {
+			  return null;
+		  }
+	}
+	return cacheContents.get(key).getValue();
+    
   }
 
 
