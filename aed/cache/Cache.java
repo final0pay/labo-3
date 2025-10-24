@@ -49,7 +49,7 @@ public class Cache<Key,Value> {
 				  return null;
 			  }
 		}
-		return cacheContents.contaninsKey(key)?cacheContents.get(key).getValue():null;
+		return cacheContents.containsKey(key)?cacheContents.get(key).getValue():null;
   }
 
 
@@ -72,13 +72,25 @@ public class Cache<Key,Value> {
 		  }
 	  }
 	  else {
-		  Position<Key> ultimo = this.keyListLRU.last();
-		  this.keyListLRU.remove(ultimo);
+		  if(this.keyListLRU.isEmpty()) {
+			  this.keyListLRU.addFirst(key);
+			  CacheCell<Key, Value> e = new CacheCell<>(value, true ,this.keyListLRU.first());
+			  this.cacheContents.put(key, e);
+			  return;
+			  
+		  }
+		  if(this.cacheContents.size() == this.maxCacheSize) {
+			  Position<Key> ultimo = this.keyListLRU.last();
+			  Key ultimoKey = ultimo.element();
+			  if(this.cacheContents.get(ultimoKey).getDirty() == true) {
+				  this.mainMemory.write(ultimoKey, this.cacheContents.get(ultimoKey).getValue());
+			  }
+			  this.keyListLRU.remove(ultimo);
+			  this.cacheContents.remove(ultimoKey);
+		  }
 		  this.keyListLRU.addFirst(key);	
-		  this.cacheContents.remove(ultimo.element());
-		  CacheCell<Key, Value> e = new CacheCell<>(value, false,this.keyListLRU.first());
+		  CacheCell<Key, Value> e = new CacheCell<>(value, true ,this.keyListLRU.first());
 		  this.cacheContents.put(key, e);
-		  this.mainMemory.write(key, value);
 	  }
   }
 /*  public Position<Key> buscar(Key k) {
