@@ -63,6 +63,14 @@ public class Cache<Key,Value> {
 			  elem.setPos(this.keyListLRU.first());
 		  }
 	  }
+	  else {
+		  Position<Key> ultimo = this.keyListLRU.last();
+		  this.keyListLRU.remove(ultimo);
+		  this.keyListLRU.addFirst(key);
+		  this.cacheContents.remove(ultimo.element());
+		  CacheCell<Key, Value> e = new CacheCell();
+		  this.cacheContents.put(key, null);
+	  }
   }
 /*  public Position<Key> buscar(Key k) {
 	  Position<Key> cursor 
