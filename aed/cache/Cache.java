@@ -40,8 +40,16 @@ public class Cache<Key,Value> {
   // Devuelve el valor que corresponde a una clave "Key"
   public Value get(Key key) {
     // CAMBIA este metodo
-	  
-    return null;
+		if(cacheContents.isEmpty()) {
+			  if(mainMemory.table.containsKey(key)) {
+				  keyListLRU.addFirst(key);
+				  CacheCell<Key,Value> momentaneo= new CacheCell<Key,Value>(mainMemory.read(key), false, keyListLRU.first());
+				  cacheContents.put(key,momentaneo);
+			  }else {
+				  return null;
+			  }
+		}
+		return cacheContents.get(key).getValue();
   }
 
 
@@ -66,10 +74,11 @@ public class Cache<Key,Value> {
 	  else {
 		  Position<Key> ultimo = this.keyListLRU.last();
 		  this.keyListLRU.remove(ultimo);
-		  this.keyListLRU.addFirst(key);
+		  this.keyListLRU.addFirst(key);	
 		  this.cacheContents.remove(ultimo.element());
-		  CacheCell<Key, Value> e = new CacheCell();
-		  this.cacheContents.put(key, null);
+		  CacheCell<Key, Value> e = new CacheCell<>(value, false,this.keyListLRU.first());
+		  this.cacheContents.put(key, e);
+		  this.mainMemory.write(key, value);
 	  }
   }
 /*  public Position<Key> buscar(Key k) {
